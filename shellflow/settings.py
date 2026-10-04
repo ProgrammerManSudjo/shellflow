@@ -3549,7 +3549,7 @@ class App:
     #  9. THE PAGES
     # ========================================================================================
     APP_ICONS = {"discord": "message", "zed": "code", "obsidian": "file_text", "vscode": "code", "nvim": "terminal",
-                 "wt": "terminal", "firefox": "globe", "zen": "globe", "yazi": "folder", "obs": "video", "tacky": "box", "windhawk": "layers", "helium": "globe", "filepilot": "folder", "rainmeter": "clock"}
+                 "wt": "terminal", "firefox": "globe", "zen": "globe", "yazi": "folder", "obs": "video", "tacky": "box", "windhawk": "layers", "helium": "globe", "filepilot": "folder"}
 
     def repair_config(self):
         """Fix settings YASB would reject (staged: it takes effect when you press Apply)."""

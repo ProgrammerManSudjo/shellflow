@@ -71,6 +71,7 @@ irm https://raw.githubusercontent.com/ProgrammerManSudjo/shellflow/main/install-
 | **A settings window** | **ShellFlow**: widgets, colour schemes, keybinds, templates, backups. Open it from the Home button on the bar |
 | **Colours** | Material You schemes from your wallpaper or your Windows accent. Out of the box the bar simply follows your Windows accent |
 | **Wallpapers** | A small collection, copied to `Pictures\Wallpapers` |
+| **Rainmeter widget** *(optional)* | The cookie clock skin, copied to `Documents\Rainmeter\Skins` (install [Rainmeter](https://www.rainmeter.net) yourself) |
 | **Terminal** *(optional)* | yazi, neovim, fzf and friends with starter configs; fzf takes your accent colour |
 
 <br>
@@ -110,6 +111,7 @@ ShellFlow can write colour themes for these once you have installed them. The in
 | `shellflow/` | `theme.py`, `settings.py` | `%USERPROFILE%\.config\yasb\scripts` |
 | `defaults/yasb/` | starter `config.yaml`, `styles.css`, `.env` | `%USERPROFILE%\.config\yasb` |
 | `wallpapers/` | images (png, jpg, webp, bmp) | `%USERPROFILE%\Pictures\Wallpapers` |
+| `rainmeter/` | the Rainmeter cookie clock widget | `%USERPROFILE%\Documents\Rainmeter\Skins` |
 | `terminal/` | Neovim, Yazi and PowerShell (fzf, zoxide) configs | `%LOCALAPPDATA%\nvim`, `%APPDATA%\yazi\config`, your PowerShell profile |
 | `assets/` | the artwork in this README | not installed |
 

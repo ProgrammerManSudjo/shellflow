@@ -656,8 +656,6 @@ def defaults(key):
         return [(home / ".config" / "tacky-borders", home / ".config" / "tacky-borders")], ""
     if key == "filepilot":  # FPilot-Config.json; File Pilot creates it, ShellFlow only adds the colour scheme to it
         return [(base / "Voidstar" / "FilePilot", base / "Voidstar" / "FilePilot") for base in (local, appdata)], ""
-    if key == "rainmeter":  # the Skins folder (Rainmeter.ini may say where it is)
-        return [(appdata / "Rainmeter", rainmeter_skins_dir())], ""
     if key == "helium":  # the theme is a folder to load once; it is written when one of these browsers is installed
         folder = CONFIG / "helium-theme"
         return [(local / "imput" / "Helium", folder), (local / "Google" / "Chrome", folder), (local / "BraveSoftware", folder),
@@ -1274,159 +1272,6 @@ def restart_helium():
     return "Helium restarted with your tabs"
 
 
-def rainmeter_skins_dir():
-    """The Skins folder: SkinPath in %APPDATA%/Rainmeter/Rainmeter.ini, else Documents/Rainmeter/Skins."""
-    try:
-        text = read_text_any(where("APPDATA") / "Rainmeter" / "Rainmeter.ini")[0]
-        m = re.search(r"^SkinPath\s*=\s*(.+?)\s*$", text, re.M)
-        if m and Path(m.group(1)).is_dir():
-            return Path(m.group(1))
-    except OSError:
-        pass
-    home = where("USERPROFILE")
-    for base in (home / "Documents", home / "OneDrive" / "Documents"):
-        if (base / "Rainmeter" / "Skins").is_dir():
-            return base / "Rainmeter" / "Skins"
-    return home / "Documents" / "Rainmeter" / "Skins"
-
-
-def read_text_any(path):
-    """(text, encoding) of a text file whatever it is: Rainmeter writes UTF-16, many skins are UTF-8 or ANSI."""
-    raw = Path(path).read_bytes()
-    if raw.startswith(b"\xff\xfe") or raw.startswith(b"\xfe\xff"):
-        return raw.decode("utf-16"), "utf-16"
-    if raw.startswith(b"\xef\xbb\xbf"):
-        return raw[3:].decode("utf-8"), "utf-8-sig"
-    try:
-        return raw.decode("utf-8"), "utf-8"
-    except UnicodeDecodeError:
-        return raw.decode("cp1252", errors="replace"), "cp1252"
-
-
-def write_text_any(path, text, encoding):
-    Path(path).write_bytes(text.encode(encoding))
-
-
-def rainmeter_role(key):
-    """What a colour variable is for, from its name (None = not recognised, left alone)."""
-    k = re.sub(r"[^a-z]", "", key.lower())
-    has = lambda *w: any(x in k for x in w)
-    if has("second") and not has("secondary") and has("hand", "needle", "arm"):
-        return "l1"
-    if has("hand", "needle"):
-        return "l2"
-    if has("date", "bubble", "badge", "pill"):
-        return "d3" if has("text", "font", "num", "label", "day") else "l3"
-    if has("tick", "dot", "mark", "pip"):
-        return "l1"
-    if has("cookie", "body", "face", "dial", "base", "background", "bg", "surface", "plate", "backdrop", "container"):
-        return "d3"
-    if has("shadow", "outline", "border", "stroke"):
-        return "d2"
-    if has("text", "font", "digit", "number", "numeral", "label"):
-        return "l3"
-    if has("accent", "primary", "highlight", "main"):
-        return "l1"
-    if has("secondary"):
-        return "l2"
-    if has("tertiary"):
-        return "ter"
-    return None
-
-
-def rainmeter_user_map():
-    try:
-        data = json.loads((CONFIG / "rainmeter.json").read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return {}, ""
-    return {str(k).lower(): str(v) for k, v in dict(data.get("map", {})).items()}, str(data.get("skin", ""))
-
-
-def rainmeter_colour(value, hexcolour):
-    """`value` (a colour as the skin wrote it) with the colour replaced and its format and alpha kept; None if it is not a colour."""
-    m = RM_COLOUR.match(value)
-    if not m:
-        return None
-    r, g, b = (int(hexcolour[i:i + 2], 16) for i in (1, 3, 5))
-    if m.group(6):
-        return f"{m.group(5)}{hexcolour[1:].upper() if m.group(6).isupper() else hexcolour[1:]}{m.group(7) or ''}"
-    sep = ", " if ", " in value else ","
-    return sep.join(map(str, (r, g, b) + ((int(m.group(4)),) if m.group(4) is not None else ())))
-
-
-def rainmeter_recolour(text, P, user=None):
-    """(new text, [(variable, old, new)]) for one skin file: every colour variable in [Variables] whose name says what it is for."""
-    roles = {"acc": P.acc, "l1": P.l1, "l2": P.l2, "l3": P.l3, "d1": P.d1, "d2": P.d2, "d3": P.d3, "ter": P.ter(70), "bg": P.t(.08)}
-    user = user or {}
-    out, section, changes = [], "", []
-    for line in text.splitlines(keepends=True):
-        head = re.match(r"^\s*\[([^\]]+)\]", line)
-        if head:
-            section = head.group(1).strip().lower()
-        elif section == "variables" and not line.lstrip().startswith(";"):
-            m = re.match(r"^(\s*)([^=\s][^=]*?)(\s*=\s*)(.*?)(\r?\n)?$", line)
-            if m:
-                role = user.get(m.group(2).strip().lower()) or rainmeter_role(m.group(2))
-                new = rainmeter_colour(m.group(4), roles[role]) if role in roles else None
-                if new is not None and new != m.group(4).strip():
-                    changes.append((m.group(2).strip(), m.group(4).strip(), new))
-                    line = f"{m.group(1)}{m.group(2)}{m.group(3)}{new}{m.group(5) or ''}"
-        out.append(line)
-    return "".join(out), changes
-
-
-def rainmeter_skins():
-    """The skin folders to recolour: [(skins root, skin folder)]."""
-    user, user_skin = rainmeter_user_map()
-    words = [w.strip().lower() for w in (env("YASB_RAINMETER_SKIN") or user_skin or "cookie").split(",") if w.strip()]
-    found = []
-    for root in folders("YASB_RAINMETER_SKINS", *defaults("rainmeter")):
-        if root.is_dir():
-            found += [(root, p) for p in sorted(root.iterdir()) if p.is_dir() and any(w in p.name.lower() for w in words)]
-    return found
-
-
-def rainmeter_exe():
-    for p in (env("YASB_RAINMETER_EXE"), str(where("PROGRAMFILES") / "Rainmeter" / "Rainmeter.exe"), str(where("PROGRAMFILES(X86)") / "Rainmeter" / "Rainmeter.exe")):
-        if p and Path(p).is_file():
-            return p
-    return None
-
-
-def write_rainmeter(P):
-    """Rainmeter: the colour variables of the cookie clock skin follow your scheme, then the skin is refreshed (only when Rainmeter is running).
-    Default:  Documents/Rainmeter/Skins (or SkinPath in Rainmeter.ini), skins whose folder name contains "cookie"
-    Variables: YASB_RAINMETER_SKINS (the Skins folder), YASB_RAINMETER_SKIN (words of the skin folder names), YASB_RAINMETER_EXE"""
-    user = rainmeter_user_map()[0]
-    refresh = []
-    for root, skin in rainmeter_skins():
-        changed = False
-        for path in sorted(skin.rglob("*")):
-            if path.suffix.lower() not in (".ini", ".inc") or not path.is_file():
-                continue
-            try:
-                text, enc = read_text_any(path)
-            except OSError:
-                continue
-            new, changes = rainmeter_recolour(text, P, user)
-            if changes:
-                write_text_any(path, new, enc)
-                changed = True
-        if changed:  # every skin file of this folder (a skin file has a [Rainmeter] section) is refreshed
-            for path in sorted(skin.rglob("*.ini")):
-                try:
-                    if re.search(r"^\s*\[Rainmeter\]", read_text_any(path)[0], re.M | re.I):
-                        refresh.append((str(path.parent.relative_to(root)), path.name))
-                except OSError:
-                    pass
-    exe = rainmeter_exe()
-    if refresh and exe and "rainmeter.exe" in subprocess.run(["tasklist", "/FI", "IMAGENAME eq Rainmeter.exe", "/NH"], capture_output=True, text=True,
-                                                            creationflags=NO_WINDOW if os.name == "nt" else 0).stdout.lower():
-        for config, file in refresh:
-            subprocess.run([exe, "!Refresh", config, file], capture_output=True, creationflags=NO_WINDOW if os.name == "nt" else 0)
-    return bool(refresh)
-
-
 def write_helium(P):
     """Helium (and Chrome, Brave, Vivaldi, Edge): a theme extension "YASB Accent": manifest.json in a folder. The active tab and the
     toolbar are black, the accent is in the address bar and icons (YASB_HELIUM_TAB=accent: an accent toolbar and active tab; =#rrggbb: that colour;
@@ -1854,7 +1699,6 @@ APP_TABLE = (
     ("obs", "OBS Studio", "YASB_OBS_THEMES", False, "variant of the Yami theme", write_obs),
     ("tacky", "Tacky Borders", "YASB_TACKY_CONFIG", False, "active border colour", write_tacky),
     ("filepilot", "File Pilot", "YASB_FILEPILOT_CONFIG", False, "colour scheme \"YASB Accent\" in FPilot-Config.json", write_filepilot),
-    ("rainmeter", "Rainmeter", "YASB_RAINMETER_SKINS", False, "the cookie clock skin's colours (and a refresh of the skin)", write_rainmeter),
     ("helium", "Helium", "YASB_HELIUM_THEME", False, "theme extension for Helium and other Chromium browsers (load the folder once)", write_helium),
     ("windhawk", "Windhawk", "YASB_WINDHAWK_MODS", False, "taskbar, start menu and notification styler mods", write_windhawk),
 )
@@ -2808,21 +2652,6 @@ def doctor():
             out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq obs64.exe", "/NH"], capture_output=True, text=True, creationflags=NO_WINDOW).stdout
             say("  OBS is " + ("RUNNING: close it and open it again, OBS reads themes only at start-up" if "obs64" in out.lower() else "closed") )
             say("  In OBS: Settings > Appearance > Theme = Yami, then Style = YASB Accent")
-    except Exception:
-        say(f"  FAIL  {traceback.format_exc().strip().splitlines()[-1]}")
-    say()
-    say("Rainmeter (the cookie clock skin)")
-    try:
-        skins = rainmeter_skins()
-        say(f"  skins whose name contains {env('YASB_RAINMETER_SKIN') or 'cookie'!r}: {[str(p) for _, p in skins] or 'none found in ' + str(rainmeter_skins_dir())}")
-        for root, skin in skins:
-            for path in sorted(skin.rglob("*")):
-                if path.suffix.lower() in (".ini", ".inc") and path.is_file():
-                    text, _ = read_text_any(path)
-                    colours = [(m.group(2).strip(), rainmeter_role(m.group(2))) for l in text.splitlines() if (m := re.match(r"^(\s*)([^=\s;\[][^=]*?)\s*=\s*(.*)$", l)) and RM_COLOUR.match(m.group(3))]
-                    if colours:
-                        say(f"    {path.relative_to(root)}: " + ", ".join(f"{k} -> {r or '(not recognised)'}" for k, r in colours))
-        say(f"  Rainmeter.exe: {rainmeter_exe() or 'not found (the skin is recoloured but not refreshed)'}")
     except Exception:
         say(f"  FAIL  {traceback.format_exc().strip().splitlines()[-1]}")
     say()

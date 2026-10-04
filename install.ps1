@@ -3,7 +3,7 @@
   EVERY step asks yes or no first. Nothing from komorebi or whkd is bundled: they come from their official scoop packages.
 
   Run it (as a NORMAL user, not as administrator):
-    irm https://raw.githubusercontent.com/ProgrammerManSudjo/shellflow/main/install.ps1 | iex
+    irm https://raw.githubusercontent.com/YOUR-NAME/shellflow-dotfiles/main/install.ps1 | iex
   or from a clone:   .\install.ps1
   Unattended (every question takes its default answer):   $env:SHELLFLOW_YES = "1"; .\install.ps1
   Everything without asking: see install-all.ps1 (read the warning in it first).
@@ -13,7 +13,7 @@
 #>
 
 # ---- set by publish.ps1 (or edit them by hand) ------------------------------------------------------
-$ZipUrl        = "https://github.com/ProgrammerManSudjo/shellflow/archive/refs/heads/main.zip"
+$ZipUrl        = "https://github.com/YOUR-NAME/shellflow-dotfiles/archive/refs/heads/main.zip"
 $WallpapersUrl = ""   # optional: a wallpapers.zip attached to a GitHub Release, for collections too big for git
 $WindhawkUrl   = "https://github.com/ramensoftware/windhawk/releases"   # the Windhawk (2.0 alpha) download page
 # -------------------------------------------------------------------------------------------------------
@@ -171,6 +171,21 @@ if (Ask "Add the ShellFlow block (fzf colours that follow your accent, zoxide, a
     if ($old -notmatch "ShellFlow terminal") { Add-Content $profileFile ("`r`n" + (Get-Content "$src\terminal\powershell\shellflow-profile.ps1" -Raw)) } else { Say "  Your profile already has the block." }
 }
 
+# ---- 6b. Rainmeter cookie clock widget (optional) -----------------------------------------------------------
+$rmSkins = @(Get-ChildItem (Join-Path (Get-Source) "rainmeter") -Directory -ErrorAction SilentlyContinue)
+if ($rmSkins.Count -gt 0) {
+    Say ""
+    $rmDest = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Rainmeter\Skins"
+    if (Ask "Copy the Rainmeter widget (the cookie clock) to $rmDest ? Rainmeter itself is installed separately: https://www.rainmeter.net" $false) {
+        New-Item -ItemType Directory -Force -Path $rmDest | Out-Null
+        foreach ($d in $rmSkins) {
+            if ((Test-Path (Join-Path $rmDest $d.Name)) -and -not (Ask "  $($d.Name) already exists. Replace it?" $false $true)) { Say "  Kept your $($d.Name)"; continue }
+            Copy-Item $d.FullName $rmDest -Recurse -Force
+        }
+        Say "Open Rainmeter, choose Refresh all, then load the skin in the Rainmeter manager."
+    }
+}
+
 # ---- 7. Windhawk (optional, for the taskbar styling) ----------------------------------------------------
 Say ""
 if (Ask "Open the Windhawk download page ($WindhawkUrl) so you can install it? (optional: only for the taskbar styling)" $false) { Start-Process $WindhawkUrl }
@@ -204,4 +219,3 @@ $links = @(
 )
 foreach ($l in $links) { Write-Host ("  {0,-44} {1}" -f $l[0], $l[1]) -ForegroundColor Cyan }
 Say ""
-
