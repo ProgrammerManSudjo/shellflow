@@ -1,0 +1,11 @@
+# ShellFlow starter config for Yazi. The "yasb-accent" flavor (colours and white icons) is written by ShellFlow (Templates > Yazi).
+[mgr]
+ratio          = [1, 4, 3]
+sort_by        = "natural"
+sort_dir_first = true
+show_hidden    = false
+show_symlink   = true
+
+[preview]
+max_width  = 1000
+max_height = 1000

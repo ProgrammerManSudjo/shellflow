@@ -1,0 +1,382 @@
+# ==================================
+# CORE CONFIGURATION SETTINGS
+# ==================================
+watch_stylesheet: true
+watch_config: true
+system_colors: true
+show_systray: false
+debug: false
+
+# ==================================
+# KOMOREBI INTEGRATION
+# ==================================
+komorebi:
+  start_command: "komorebic start --whkd"
+  stop_command: "komorebic stop --whkd"
+  reload_command: "komorebic.exe reload-configuration"
+
+# ==================================
+# BARS
+# ==================================
+bars:
+  status-bar:
+    enabled: true
+    class_name: "yasb-bar"
+    screens: ["*"]
+    alignment:
+      position: "top"
+      align: "center"
+    blur_effect:
+      enabled: false
+      dark_mode: false
+      round_corners: true
+      border_color: None
+    window_flags:
+      always_on_top: true
+      windows_app_bar: true
+      hide_on_fullscreen: true
+      auto_hide: false
+    dimensions:
+      width: auto
+      height: 58
+    padding:
+      top: 12
+      left: 0
+      bottom: 12
+      right: 0
+    animation:
+      enabled: true
+      duration: 150
+    widgets:
+      left: [
+        "home",
+        "komorebi_workspaces",
+        "komorebi_active_layout",
+        # "control_center",
+        # "active_window",
+      ]
+      center: ["taskbar"]
+      right: [
+        # "systray",
+        "notes",
+        # "whkd",
+        "clock",
+        "power_menu",
+      ]
+
+
+# ==================================
+# WIDGETS (only those referenced by a bar above)
+# ==================================
+widgets:
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "{%A %d %B, %H:%M}"
+      label_alt: "{%A %d %B %Y, %H:%M}"
+      locale: ""
+      update_interval: 1000
+      timezones: []
+      tooltip: false
+      calendar:
+        blur: false
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: None
+        alignment: "right"
+        direction: "down"
+        offset_top: 0
+        offset_left: 0
+        show_holidays: false
+        show_week_numbers: false
+        extended: false
+      callbacks:
+        on_left: "toggle_calendar"
+        on_middle: "next_timezone"
+        on_right: "toggle_label"
+
+  komorebi_workspaces:
+    type: "komorebi.workspaces.WorkspaceWidget"
+    options:
+      label_offline: "Komorebi Config Offline"
+      label_workspace_btn: "{name}"
+      label_workspace_active_btn: "{name}"
+      label_workspace_populated_btn: "{name}"
+      label_float_override: "\uebf9"
+      label_default_name: ""
+      label_zero_index: false
+      hide_if_offline: false
+      reverse_scroll_direction: true
+      enable_scroll_switching: true
+      app_icons:
+        enabled_populated: false
+        enabled_active: false
+        size: 12
+        max_icons: 0
+        hide_label: false
+        hide_duplicates: false
+        hide_floating: false
+      toggle_workspace_layer:
+        enabled: false
+        tiling_label: "Tiling"
+        floating_label: "Floating"
+
+  komorebi_active_layout:
+    type: "komorebi.active_layout.ActiveLayoutWidget"
+    options:
+      hide_if_offline: true
+      label: " {icon} "
+      layouts:
+        [
+          "bsp",
+          "columns",
+          "rows",
+          "grid",
+          "scrolling",
+          "vertical_stack",
+          "horizontal_stack",
+          "ultrawide_vertical_stack",
+          "right_main_vertical_stack",
+        ]
+      layout_icons:
+        bsp: "\uebeb"
+        columns: "\uebf7"
+        rows: "\uec01"
+        grid: "\udb81\udf58"
+        scrolling: "\uebf7"
+        vertical_stack: "\uebee"
+        horizontal_stack: "\uebf0"
+        ultrawide_vertical_stack: "\uebee"
+        right_main_vertical_stack: "\uebf1"
+        monocle: "\uf06f"
+        maximized: "\uf06f"
+        floating: "\uf2d2"
+        paused: "\udb83\udf89"
+        tiling: "\udb81\ude40"
+      callbacks:
+        on_left: "toggle_layout_menu"
+        on_middle: "next_layout"
+        on_right: "prev_layout"
+      layout_menu:
+        blur: false
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: None
+        alignment: "left"
+        direction: "down"
+        offset_top: 0
+        offset_left: 0
+        show_layout_icons: true
+
+  komorebi_control:
+    type: "komorebi.control.KomorebiControlWidget"
+    options:
+      label: "\udb81\ude33"
+      icons:
+        start: "\uead3"
+        stop: "\uead7"
+        reload: "\uead2"
+      run_ahk: false
+      run_whkd: true
+      run_masir: false
+      show_version: true
+      komorebi_menu:
+        blur: false
+        round_corners: True
+        round_corners_type: "normal"
+        border_color: None
+        alignment: "left"
+        direction: "down"
+        offset_top: 0
+        offset_left: 20
+
+  power_menu:
+    type: "yasb.power_menu.PowerMenuWidget"
+    options:
+      label: "\udb81\udc25"
+      menu_style: "popup"            # was "fullscreen" - set it back to restore the full-screen overlay
+      show_user: false
+      uptime: false
+      popup:
+        blur: false
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "None"
+        alignment: "right"
+        direction: "down"
+        offset_top: 0
+        offset_left: -20
+      buttons:
+        lock: ["\uea75", "Lock"]
+        signout: ["\udb80\udf43", "Sign out"]
+        sleep: ["\u23fe", "Sleep"]
+        hibernate: ["\uf28e", "Hibernate"]
+        restart: ["\uead2", "Restart"]
+        shutdown: ["\uf28e", "Shut Down"]
+        cancel: ["\udb81\udf3a", "Cancel"]
+
+  systray:
+    type: "yasb.systray.SystrayWidget"
+    options:
+      class_name: "systray"
+      label_collapsed: "\uf47c"
+      label_expanded: "\uf47d"
+      label_position: "right"
+      icon_size: 16
+      pin_click_modifier: "alt"
+      show_unpinned: false
+      show_unpinned_button: true
+      show_battery: false
+      show_volume: false
+      show_network: false
+      tooltip: false
+      hide_icons: ["rainmeter","discord","WhatsApp","tacky-borders","sunshine"]
+
+  taskbar:
+    type: "yasb.taskbar.TaskbarWidget"
+    options:
+      icon_size: 16
+      tooltip: false
+      show_only_visible: false
+      strict_filtering: true
+      monitor_exclusive: true
+      hide_empty: true
+      animation:
+        enabled: true
+        duration: 250
+      preview:
+        enabled: true
+        width: 280
+        delay: 400
+        padding: 8
+        margin: 12   # distance below the taskbar button; each +1 moves the preview about 1px lower (16 was too close, 26 too far)
+      title_label:
+        enabled: false
+        show: "always"
+        min_length: 10
+        max_length: 30
+      ignore_apps:
+        processes: []
+        titles: []
+        classes: []
+
+  home:
+    type: "yasb.home.HomeWidget"
+    options:
+      label: "<span>\udb81\ude33<span>"
+      menu_list:
+        - { title: "ShellFlow", command: "pythonw", args: ["theme.py", "settings"], show_window: false }
+      power_menu: true
+      system_menu: true
+      blur: false
+      direction: "down"
+      offset_top: 0
+      offset_left: 20
+
+  wallpapers:
+    type: "yasb.wallpapers.WallpapersWidget"
+    options:
+      label: "\udb83\ude09"
+      # REQUIRED: folder(s) containing your wallpapers (a single path or a list)
+      image_path: "__USERPROFILE__/Pictures/Wallpapers"
+      tooltip: false
+      change_automatically: false
+      update_interval: 300
+      engine:
+        enabled: true
+        animation: "circle"   # circle / slide_top / diamond / split
+      gallery:
+        type: "magnified"         # <- GALLERY STYLE: default / magnified / strip / slide
+        accent_color: "auto"     # selection outline colour: "auto" follows your Windows accent, or a hex like "#89b4fa"
+        enabled: true
+        blur: false
+        image_width: 220         # tile size (2.0.7 docs example uses 220)
+        image_per_page: 6
+        vertical_position: "top"  # sits directly under the bar (the work area starts below it)
+        horizontal_position: "center"
+        position_offset: [0, 38]  # 0px top/bottom; 38px left/right = the edge gap of the 96%-wide bar on 1920px
+        respect_work_area: true
+        orientation: "portrait"  # slide uses upright thumbnails; "landscape" is the other choice
+        show_buttons: false
+        image_spacing: 0   # gap between images = the two 4px image borders = 8px
+        lazy_load: true
+        lazy_load_fadein: 400
+        image_corner_radius: 12
+      keybindings:
+        # Opens the gallery on the monitor where the mouse cursor is (active / cursor / primary).
+        # Needs YASB 2.0.7+ docs; modifier + key only. Change the keys if they clash with something.
+        - keys: "ctrl+alt+w"
+          action: "toggle_gallery"
+          screen: "cursor"
+      callbacks:
+        on_left: "toggle_gallery"
+        on_middle: "do_nothing"
+        on_right: "change_wallpaper"
+
+  notes:
+    type: "yasb.notes.NotesWidget"
+    options:
+      label: "<span>\udb82\udd0c</span>"
+      label_alt: "<span>\udb82\udd0c</span>"
+      menu:
+        blur: false
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "None"
+        alignment: "right"
+        direction: "down"
+        offset_top: 0
+        offset_left: 0
+      callbacks:
+        on_left: "toggle_menu"
+        on_middle: "do_nothing"
+        on_right: "do_nothing"
+
+  control_center:
+    type: "yasb.control_center.ControlCenterWidget"
+    options:
+      label: "<span>\uf1de</span>"
+      tooltip: false
+      popup:
+        blur: false
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "None"
+        alignment: "right"
+        direction: "down"
+        offset_top: 0
+      callbacks:
+        on_left: "toggle_menu"
+
+  whkd:
+    type: "yasb.whkd.WhkdWidget"
+    options:
+      label: "<span>\uf11c</span>"
+
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[title]}"
+      label_alt: "{win[title]}"
+      label_no_window: ""
+      label_icon: false
+      label_icon_size: 16
+      max_length: 12
+      max_length_ellipsis: "..."
+      monitor_exclusive: true
+      callbacks:
+        on_left: "do_nothing"
+        on_middle: "do_nothing"
+        on_right: "do_nothing"
+
+  cava:
+    type: "yasb.cava.CavaWidget"
+    options:
+      bars_number: 4
+      bar_width: 4
+      bar_spacing: 3
+      bar_height: 16
+      bar_type: "bars"
+      gradient: 0
+      foreground: "#251a00"
+      framerate: 60

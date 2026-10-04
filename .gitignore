@@ -1,0 +1,6 @@
+# the installer downloads komorebi, whkd and YASB itself; none of it belongs in this repo
+*.before-shellflow
+__pycache__/
+*.pyc
+.sounds/
+.thumbs/

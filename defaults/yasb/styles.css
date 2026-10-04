@@ -1,0 +1,1178 @@
+@import "yasb_colors.css";
+@import "theme_colors.css";   /* written by theme.py (home menu > Theme); overrides the accent vars */
+
+/* ====================================================================
+   THEME - Material You "content"-style: capsules take a tone of your
+   Windows accent colour, with dark ink on top. Needs `system_colors: true`
+   in config.yaml (YASB generates yasb_colors.css from your accent).
+
+     bar, popups                  = #000000
+     capsule background           = --yasb-accent-light1  (a bit darker than light2)
+     text / icons on capsules     = --yasb-accent-dark3
+     idle / populated / hover     = black overlays at 12% / 30% / 22%
+     active / focused button      = --yasb-accent-dark3 with --yasb-accent-light3 text
+     highlights (selected day, checked box, active control button) = --yasb-accent-light1
+
+   To change the capsule tone swap light1 for light2 (lighter), accent
+   (stronger) or dark1 (darker). Change your Windows accent colour and
+   everything follows it.
+   ==================================================================== */
+
+/* ====================================================================
+   FONTS - one rule per font group. Edit the family in ONE place to swap.
+   Sizes are back to the originals: 12px for the clock, menus and tooltips,
+   13px base, 16-18px for icons.
+   ==================================================================== */
+* {
+    font-family: "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+    font-weight: 600;
+    font-size: 13px;
+    color: #f1f1f1;
+    margin: 0;
+    padding: 0;
+}
+
+/* Nerd Font group - widget labels and icons */
+.widget .label,
+.komorebi-active-layout .label,
+.komorebi-control-widget .label,
+.power-menu-widget .label,
+.systray .button,
+.context-menu .menu-checkbox .checkbox {
+    font-family: "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+}
+
+.komorebi-active-layout .label,
+.komorebi-control-widget .label {
+    font-weight: 400;
+}
+
+/* Menu font group (Poppins) - popups, menus and tooltips.
+   The `*` selectors reach child widgets inside each menu, which the
+   global `*` rule would otherwise style. */
+.context-menu,
+.context-menu *,
+.context-menu .menu-checkbox,
+.context-menu .menu-checkbox .checkbox,
+.home-menu,
+.home-menu *,
+.komorebi-layout-menu *,
+.power-menu-compact,
+.power-menu-compact *,
+.komorebi-control-menu .footer .text,
+.power-menu-popup .button,
+.power-menu-popup .button .label,
+.taskbar-preview .header .title,
+.tooltip {
+    font-family: "Poppins", "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+    font-weight: 400;
+    font-size: 12px;   /* <- MENU FONT SIZE (one place for every menu and tooltip) */
+}
+
+/* Clock text (Poppins). With the DirectWrite font engine (YASB_FONT_ENGINE=native)
+   the normal family + weight 600 resolves to SemiBold correctly. */
+.clock-widget .label {
+    font-family: "Poppins", "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Calendar (Segoe UI) */
+.calendar,
+.calendar .day-label,
+.calendar .month-label,
+.calendar .date-label {
+    font-family: "Segoe UI";
+    font-weight: 400;
+}
+
+.calendar .calendar-table,
+.calendar .calendar-table::item {
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+/* The date grid and its Sun-Sat header are internal child widgets. Since the base
+   font is now JetBrains Mono, they need Segoe UI set on every child (as originally,
+   when Segoe UI was the base). Newer YASB names the popup .clock-popup.calendar. */
+.calendar *,
+.clock-popup.calendar,
+.clock-popup.calendar * {
+    font-family: "Segoe UI";
+}
+
+/* ====================================================================
+   SURFACES
+   ==================================================================== */
+
+/* Bar background: solid black, no blur (blur is off in config.yaml).
+   Corner radius nests around the 14px capsules. */
+.yasb-bar {
+    padding: 2px;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    border-radius: 20px;   /* capsule radius + ~5px margin, so the corners nest */
+    background-color: #000000;
+}
+
+.yasb-bar .label {
+    color: var(--yasb-accent-dark3);
+}
+
+.container-left,
+.container-right {
+    flex: 0 1 auto;
+}
+
+.container-center {
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+/* Capsules: accent colour, squircle-style corners. Edit here to restyle every capsule. */
+.home-widget,
+.komorebi-workspaces,
+.komorebi-active-layout,
+.komorebi-control-widget,
+.taskbar-widget .widget-container,
+.systray,
+.wallpapers-widget,
+.clock-widget,
+.power-menu-widget {
+    background-color: var(--yasb-accent-light1);
+    border-radius: 14px;   /* <- WIDGET ROUNDING (squircle look: ~1/3 of capsule height, not a full pill) */
+}
+
+/* Popups: same black, 20px corners. */
+.context-menu,
+.home-menu,
+.komorebi-layout-menu,
+.komorebi-control-menu,
+.calendar {
+    background-color: #000000;
+    border: none;
+    border-radius: 20px;
+}
+
+/* ---------- GLOBAL WIDGET ---------- */
+.widget {
+    padding: 0 8px;
+    margin: 0;
+}
+
+.widget .label {
+    padding: 0px 2px 2px 2px;
+}
+
+.widget .label.alt {
+    padding: 1px 8px 1px 8px;
+}
+
+.icon {
+    font-size: 14px;
+    color: var(--yasb-accent-dark3);
+    padding-right: 0;
+}
+
+/* ---------- CLOCK + CALENDAR ---------- */
+.clock-widget {
+    margin: 5px;
+    padding: 0;
+}
+
+.clock-widget .label {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.clock-widget .label:hover {
+    color: #000000;
+}
+
+.calendar .calendar-table,
+.calendar .calendar-table::item {
+    background-color: rgba(100, 100, 100, 0);
+    color: rgba(200, 200, 200, 0.6);
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+}
+
+.calendar .calendar-table::item:selected {
+    color: var(--yasb-accent-light1);
+}
+
+.calendar .day-label {
+    margin-top: 20px;
+}
+
+.calendar .day-label,
+.calendar .month-label,
+.calendar .date-label {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 700;
+    min-width: 180px;
+    max-width: 180px;
+}
+
+.calendar .month-label {
+    font-weight: normal;
+}
+
+.calendar .date-label {
+    font-size: 88px;
+    font-weight: 900;
+    color: var(--yasb-accent-light1);
+    margin-top: -20px;
+}
+
+/* ---------- HOME ---------- */
+.home-widget {
+    margin: 5px 5px 5px 10px;
+    padding: 2px 15px 0 15px;
+}
+
+.home-widget .icon {
+    font-size: 18px;
+    color: var(--yasb-accent-dark3);
+}
+
+.home-widget .icon:hover {
+    color: #000000;
+}
+
+.home-menu {
+    padding: 8px;
+}
+
+.home-menu .menu-item {
+    font-weight: 400;
+    background-color: transparent;
+    padding: 6px 12px;
+    margin: 5px;
+    border-radius: 12px;
+    min-width: 100px;
+    color: #d4d4d4;
+    transition: all 600ms ease-out;
+}
+
+.home-menu .menu-item:hover {
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+    color: #f1f1f1;
+}
+
+.home-menu .separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 2px 8px;
+}
+
+/* ---------- KOMOREBI ACTIVE LAYOUT ---------- */
+.komorebi-active-layout {
+    margin: 5px;
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+.komorebi-active-layout .label {
+    font-size: 16px;
+}
+
+.komorebi-active-layout .label:hover {
+    color: #000000;
+}
+
+.komorebi-layout-menu {
+    padding: 8px;
+}
+
+.komorebi-layout-menu .menu-item {
+    font-weight: 400;
+    padding: 6px 12px;
+    margin: 2px 5px;
+    border-radius: 12px;
+    min-width: 240px;
+    color: #d4d4d4;
+    transition: all 600ms ease-out;
+}
+
+.komorebi-layout-menu .menu-item-text {
+    font-weight: 400;
+    color: #d4d4d4;
+}
+
+.komorebi-layout-menu .menu-item-icon {
+    font-family: "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+    color: #f1f1f1;
+    font-size: 16px;
+}
+
+.komorebi-layout-menu .menu-item:hover {
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+    color: #f1f1f1;
+}
+
+.komorebi-layout-menu .separator {
+    max-height: 1px;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- KOMOREBI WORKSPACES ----------
+   Every state shares font, size, weight and padding; only colour,
+   background and width change, so labels never shift between states. */
+.komorebi-workspaces {
+    padding-right: 10px;
+    padding-left: 10px;
+    margin: 5px;
+}
+
+.komorebi-workspaces .ws-btn {
+    border-radius: 9px;
+    font-family: "SN Pro", "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+    font-weight: 500;
+    font-size: 13px;
+    width: 24px;
+    height: 24px;
+    margin: 0 5px;
+    padding-bottom: 2px;
+    color: rgba(100, 100, 100, 0);
+    background-color: rgba(0, 0, 0, 0.12);
+    transition: all 250ms ease-out;
+}
+
+.komorebi-workspaces .ws-btn .icon {
+    padding-bottom: 5px;
+}
+
+.komorebi-workspaces .ws-btn:hover {
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+.komorebi-workspaces .ws-btn.populated:hover {
+    background-color: rgba(0, 0, 0, 0.42);
+}
+
+.komorebi-workspaces .ws-btn.populated {
+    background-color: rgba(0, 0, 0, 0.30);
+    width: 28px;
+    color: var(--yasb-accent-dark3);
+}
+
+.komorebi-workspaces .ws-btn.active {
+    background-color: var(--yasb-accent-dark3);
+    width: 40px;
+    color: var(--yasb-accent-light3);
+}
+
+/* ---------- KOMOREBI CONTROL ---------- */
+.komorebi-control-widget {
+    margin: 5px 5px 5px 10px;
+}
+
+.komorebi-control-widget .label {
+    font-size: 16px;
+    color: var(--yasb-accent-dark3);
+    padding-left: 8px;
+    padding-right: 8px;
+    transition: opacity 200ms ease-out;
+}
+
+.komorebi-control-widget .label:hover {
+    color: #000000;
+}
+
+.komorebi-control-menu .button {
+    color: #ffffff;
+    padding: 8px 16px;
+    font-size: 32px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.08);
+    transition: all 600ms ease-out;
+}
+
+.komorebi-control-menu .button:hover {
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+}
+
+.komorebi-control-menu .button.active {
+    color: var(--yasb-accent-dark3);
+    background-color: var(--yasb-accent-light1);
+}
+
+.komorebi-control-menu .button:disabled,
+.komorebi-control-menu .button.active:disabled {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.komorebi-control-menu .footer .text {
+    font-weight: 400;
+    color: #d4d4d4;
+}
+
+/* ---------- POWER MENU ---------- */
+.power-menu-widget {
+    padding-right: 10px;
+    padding-left: 3px;
+    margin: 5px 10px 5px 5px;
+    font-size: 18px;
+}
+
+.power-menu-widget .label {
+    font-size: 18px;
+    padding-right: 6px;
+    padding-left: 13px;
+}
+
+.power-menu-widget .label:hover {
+    color: #000000;
+}
+
+/* Compact dropdown power menu (menu_style: "popup") */
+.power-menu-compact {
+    background-color: #000000;
+    border: none;
+    padding: 8px;
+    min-width: 200px;
+}
+
+.power-menu-compact .buttons {
+    background-color: transparent;
+    margin: 0;
+}
+
+.power-menu-compact .button {
+    padding: 6px 12px;
+    margin: 2px 5px;
+    background-color: transparent;
+    border: none;
+    border-radius: 12px;
+    transition: all 350ms ease-out;
+}
+
+.power-menu-compact .button.hover {
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+}
+
+.power-menu-compact .button .icon {
+    font-family: "JetBrainsMono Nerd Font Propo", "JetBrainsMono NFP";
+    font-size: 14px;
+    color: #d4d4d4;
+    padding-right: 10px;
+    min-width: 20px;
+}
+
+.power-menu-compact .button .label {
+    font-weight: 400;
+    color: #d4d4d4;
+}
+
+.power-menu-compact .button.hover .icon,
+.power-menu-compact .button.hover .label,
+.power-menu-compact .icon.hover,
+.power-menu-compact .label.hover {
+    color: #f1f1f1;
+}
+
+/* Full-screen power menu (only used when menu_style is "fullscreen") */
+.power-menu-popup {
+    border-radius: 20px;
+    background-color: #000000;
+    border: 0px solid #1d1d1d;
+}
+
+.power-menu-popup .button {
+    padding: 0;
+    width: 240px;
+    height: 180px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    margin: 10px;
+}
+
+.power-menu-popup .button.hover {
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+    border: 1px solid var(--yasb-accent);
+    margin: 10px;
+}
+
+.power-menu-popup .button .label {
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: #f1f1f1;
+}
+
+.power-menu-popup .button .icon {
+    font-size: 48px;
+    padding-top: 8px;
+    color: #f1f1f1;
+}
+
+/* ---------- SYSTEM TRAY ---------- */
+.systray {
+    padding: 8px 13px;
+    margin: 5px;
+}
+
+.systray .unpinned-container {
+    background: transparent;
+    border-radius: 10px;
+    transition: all 200ms ease-out;
+}
+
+.systray .pinned-container {
+    border-radius: 10px;
+}
+
+.systray .pinned-container[forceshow="true"] {
+    background: transparent;
+}
+
+.systray .button {
+    border-radius: 10px;
+    padding: 8px 5px;
+    margin: 0 5px;
+    color: var(--yasb-accent-dark3);
+    background-color: rgba(0, 0, 0, 0.12);
+    transition: all 200ms ease-out;
+}
+
+.systray .button:hover {
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+.systray .button[dragging="true"] {
+    background: rgba(0, 0, 0, 0.40);
+    border-color: rgba(0, 0, 0, 0.40);
+}
+
+.systray .unpinned-visibility-btn {
+    border-radius: 8px;
+    height: 20px;
+    width: 16px;
+    color: var(--yasb-accent-dark3);
+    transition: all 200ms ease-out;
+}
+
+.systray .unpinned-visibility-btn:checked {
+    background: transparent;
+}
+
+.systray .unpinned-visibility-btn:hover {
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #000000;
+}
+
+/* ---------- TOOLTIP (solid black, 15px corners) ---------- */
+.tooltip {
+    background-color: #000000;
+    border-radius: 15px;
+    color: rgba(255, 255, 255, 255);
+    padding: 6px 12px;
+    margin-top: 8px;
+}
+
+/* ---------- TASKBAR ---------- */
+.taskbar-widget .widget-container {
+    padding: 5px 10px;
+    margin: 5px 0px;
+}
+
+.taskbar-widget .app-container {
+    margin: 4px;
+    border-radius: 10px;
+    padding: 0 10px;
+}
+
+.taskbar-widget .app-container.foreground,
+.taskbar-widget .app-container.foreground:hover {
+    background-color: var(--yasb-accent-dark3);
+}
+
+.taskbar-widget .app-container.flashing {
+    background-color: var(--yasb-accent-dark1);
+}
+
+.taskbar-widget .app-container.running {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.taskbar-widget .app-container:hover {
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+.taskbar-widget .app-container .app-title {
+    padding-left: 4px;
+    color: var(--yasb-accent-dark3);
+}
+
+.taskbar-widget .app-container.foreground .app-title {
+    color: var(--yasb-accent-light3);
+}
+
+/* Preview popup is very limited in styling options, do not use margins/paddings here */
+.taskbar-preview {
+    border-radius: 20px;
+    background-color: #000000;
+}
+
+.taskbar-preview.flashing {
+    background-color: rgba(var(--yasb-accent-rgb), 0.45);
+}
+
+.taskbar-preview .header {
+    padding-bottom: 12px;
+    padding-top: 4px;
+}
+
+.taskbar-preview .header .title {
+    color: #f1f1f1;
+}
+
+.taskbar-preview .close-button {
+    color: #999;
+    font-size: 20px;
+    background-color: transparent;
+    border: none;
+    min-width: 20px;
+    border-radius: 20px;
+    min-height: 20px;
+}
+
+.taskbar-preview .close-button:hover {
+    color: #ffffff;
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+}
+
+/* ---------- CONTEXT MENU (right-click on bar) ---------- */
+.context-menu,
+.context-menu .menu-checkbox {
+    font-weight: 400;
+    border: none;
+    padding: 6px 4px;
+    margin-top: 8px;
+    color: #d4d4d4;
+}
+
+.context-menu .menu-checkbox {
+    background-color: transparent;
+}
+
+.context-menu::item,
+.context-menu .menu-checkbox {
+    background-color: transparent;
+    padding: 6px 12px;
+    margin: 2px 6px;
+    border-radius: 12px;
+    min-width: 100px;
+}
+
+.context-menu .menu-checkbox .checkbox {
+    font-weight: 400;
+    border: none;
+    padding: 8px 16px;
+    margin: 0;
+    color: #d4d4d4;
+}
+
+.context-menu .menu-checkbox .checkbox:unchecked {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.context-menu .menu-checkbox .checkbox::indicator {
+    width: 14px;
+    height: 14px;
+    margin-left: 0px;
+    margin-right: 10px;
+}
+
+.context-menu .menu-checkbox .checkbox::indicator:unchecked {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+}
+
+.context-menu .menu-checkbox .checkbox::indicator:checked {
+    background: var(--yasb-accent-light1);
+    border-radius: 20px;
+}
+
+.context-menu .menu-checkbox .checkbox:focus {
+    outline: none;
+}
+
+.context-menu::item:selected,
+.context-menu .menu-checkbox:hover {
+    background-color: rgba(var(--yasb-accent-rgb), 0.30);
+    color: #f1f1f1;
+}
+
+.context-menu::separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 4px 8px;
+}
+
+.context-menu::item:disabled {
+    color: #666666;
+    background-color: transparent;
+}
+
+/* ---------- WALLPAPERS ---------- */
+/* Built exactly like the komorebi control capsule: plain-glyph label (no <span>), no widget
+   padding override (so the default .widget 8px applies) plus 8px label padding per side. */
+.wallpapers-widget {
+    margin: 5px;
+}
+
+.wallpapers-widget .label {
+    font-size: 16px;
+    color: var(--yasb-accent-dark3);
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.wallpapers-widget .label:hover {
+    color: #000000;
+}
+
+/* Gallery popup: same surface as the other popups (black, 20px corners).
+   Each image has a 4px transparent border (for the focus ring), so 4px of window
+   padding + 4px border = 8px, matching the 8px padding of the home and layout menus. */
+.wallpapers-gallery-window {
+    background-color: #000000;
+    border: 0;
+    border-radius: 20px;
+    margin: 0;
+    padding: 4px;
+}
+
+.wallpapers-gallery-image {
+    border: 4px solid transparent;
+    border-radius: 16px;
+}
+
+.wallpapers-gallery-image:hover {
+    border: 4px solid var(--yasb-accent-dark1);
+}
+
+.wallpapers-gallery-image.focused {
+    border: 4px solid var(--yasb-accent-light1);
+}
+
+/* ====================================================================
+   FLUSH POPUPS - menus attach to the bar: square top corners (they touch the bar),
+   rounded bottom corners. Applies to every anchored menu. NOT applied to:
+     - the tooltip (kept as a floating rounded tip),
+     - the right-click menu (it opens at the cursor, not attached to the bar),
+     - the full-screen power overlay.
+   Pair with offset_top: 0 in config.yaml so there is no gap under the bar.
+   Change 20px here to change the bottom-corner rounding of every menu at once.
+   ==================================================================== */
+.home-menu,
+.komorebi-layout-menu,
+.komorebi-control-menu,
+.calendar,
+.clock-popup.calendar,
+.power-menu-compact,
+.taskbar-preview,
+.wallpapers-gallery-window {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* >>> ShellFlow (written by the settings window - change it there, not here) >>> */
+.whkd-widget,
+.notes-widget,
+.control-center-widget,
+.active-window-widget,
+.cava-widget {
+    background-color: var(--yasb-accent-light1);
+    border-radius: 14px;
+    margin: 5px;
+}
+
+.whkd-popup {
+    background-color: #000000;
+    border: none;
+    border-radius: 20px;
+}
+.whkd-popup .edit-config-button {
+    background-color: var(--yasb-accent-light1);
+    color: var(--yasb-accent-dark3);
+    padding: 4px 12px 6px 12px;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 12px;
+}
+.whkd-popup .keybind-button {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    padding: 4px 10px 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+}
+.whkd-popup .keybind-button.special {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+.whkd-popup .keybind-row:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+}
+.whkd-popup .plus-separator {
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    background-color: transparent;
+}
+.whkd-popup .filter-input {
+    padding: 0 10px 2px 10px;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+    border: 1px solid var(--yasb-accent-dark1);
+    border-radius: 12px;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.06);
+    min-height: 32px;
+}
+.whkd-popup .filter-input:focus {
+    border: 1px solid var(--yasb-accent-light1);
+}
+.whkd-popup .keybind-command {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #ffffff;
+}
+.whkd-popup .keybind-header {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--yasb-accent-light2);
+    padding: 8px 0;
+    margin-top: 16px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+}
+
+.notes-menu {
+    background-color: #000000;
+    border: none;
+    border-radius: 20px;
+    min-width: 380px;
+    max-width: 380px;
+}
+.notes-menu .notes-header {
+    background-color: transparent;
+    padding: 6px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.notes-menu .notes-header .header-title {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--yasb-accent-light2);
+}
+.notes-menu .notes-header .float-button,
+.notes-menu .notes-header .close-button {
+    background-color: transparent;
+    border: none;
+    color: var(--yasb-accent-light2);
+    font-size: 15px;
+    padding: 4px 6px;
+    border-radius: 8px;
+}
+.notes-menu .notes-header .float-button:hover,
+.notes-menu .notes-header .close-button:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+}
+.notes-menu .note-input {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--yasb-accent-dark1);
+    border-radius: 14px;
+    padding: 10px;
+    margin: 8px 12px 4px 12px;
+    min-height: 110px;
+    color: #ffffff;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+}
+.notes-menu .note-input:focus {
+    border: 1px solid var(--yasb-accent-light1);
+}
+.notes-menu .input-copy-button {
+    color: var(--yasb-accent-light2);
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: 6px;
+}
+.notes-menu .input-copy-button:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+}
+.notes-menu .add-button,
+.notes-menu .cancel-button {
+    background-color: var(--yasb-accent-light1);
+    color: var(--yasb-accent-dark3);
+    border: none;
+    border-radius: 14px;
+    padding: 8px 16px;
+    margin: 4px 12px;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+.notes-menu .add-button:hover,
+.notes-menu .cancel-button:hover {
+    background-color: var(--yasb-accent-light2);
+}
+.notes-menu .scroll-area {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+}
+.notes-menu .note-item {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+.notes-menu .note-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+.notes-menu .note-item .title {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #ffffff;
+}
+.notes-menu .note-item .date {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+}
+.notes-menu .empty-list {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.35);
+    padding: 12px 0 18px 0;
+}
+.notes-menu .copy-button,
+.notes-menu .delete-button {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 8px;
+    color: var(--yasb-accent-light2);
+    font-size: 14px;
+}
+.notes-menu .delete-button {
+    color: #ff7a8a;
+}
+.notes-menu .copy-button:hover,
+.notes-menu .delete-button:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.control-center-menu {
+    background-color: #000000;
+    border: none;
+    border-radius: 20px;
+    min-width: 400px;
+    color: #ffffff;
+}
+.control-center-menu .section {
+    background: transparent;
+    margin: 0;
+    padding: 14px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+.control-center-menu .section.system-controls {
+    padding: 14px 16px 6px 16px;
+}
+.control-center-menu .section.sliders {
+    padding: 14px 16px;
+}
+.control-center-menu .section.media,
+.control-center-menu .section.power,
+.control-center-menu .section.system-controls {
+    border-bottom: 1px solid rgba(255, 255, 255, 0);
+}
+.control-center-menu .section.system-controls .button,
+.control-center-menu .section.quick-actions .button .icon,
+.control-center-menu .section.sliders .slider .icon,
+.control-center-menu .section.sliders .slider .source-selector,
+.control-center-menu .section.power .plan-name .icon,
+.control-center-menu .section.power .mode-name .icon,
+.control-center-menu .section.media .button {
+    font-family: "Segoe Fluent Icons";
+    font-weight: 400;
+}
+.control-center-menu .section.system-controls .button {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--yasb-accent-light2);
+    border-radius: 16px;
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    font-size: 14px;
+}
+.control-center-menu .section.system-controls .button:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+.control-center-menu .section.quick-actions .button {
+    margin: 0 4px;
+}
+.control-center-menu .section.quick-actions .button .icon {
+    font-size: 17px;
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    min-height: 50px;
+    color: var(--yasb-accent-light2);
+}
+.control-center-menu .section.quick-actions .button .icon:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+.control-center-menu .section.quick-actions .button.active .icon {
+    background-color: var(--yasb-accent-light1);
+    border: 1px solid var(--yasb-accent-light1);
+    color: var(--yasb-accent-dark3);
+}
+.control-center-menu .section.quick-actions .button .title {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 4px 0 8px 0;
+    padding: 0;
+    color: #ffffff;
+}
+.control-center-menu .section.sliders .slider {
+    background: transparent;
+    border: none;
+    min-height: 34px;
+    margin: 0 4px;
+}
+.control-center-menu .section.sliders .slider .icon {
+    font-size: 16px;
+    min-width: 36px;
+    color: var(--yasb-accent-light2);
+}
+.control-center-menu .section.sliders .slider .value {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    min-width: 42px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+}
+.control-center-menu .section.sliders .slider .source-selector {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0);
+    margin-left: 4px;
+}
+.control-center-menu .section.sliders .slider .source-selector:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+.control-center-menu .section.power .plan-name,
+.control-center-menu .section.power .mode-name {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    min-height: 38px;
+    margin: 0 4px;
+    padding: 6px 12px;
+}
+.control-center-menu .section.power .plan-name:hover,
+.control-center-menu .section.power .mode-name:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+.control-center-menu .section.power .plan-name .title,
+.control-center-menu .section.power .mode-name .title {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.60);
+}
+.control-center-menu .section.power .plan-name .subtext,
+.control-center-menu .section.power .mode-name .subtext {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+}
+.control-center-menu .section.power .plan-name .icon,
+.control-center-menu .section.power .mode-name .icon {
+    color: rgba(255, 255, 255, 0.60);
+    font-size: 14px;
+}
+.control-center-menu .section.media {
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+.control-center-menu .section.media .title {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+}
+.control-center-menu .section.media .subtext {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+}
+.control-center-menu .section.media .button {
+    font-size: 14px;
+    color: var(--yasb-accent-light2);
+    background-color: rgba(255, 255, 255, 0);
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    border-radius: 10px;
+    margin: 0 0 0 4px;
+}
+.control-center-menu .section.media .button:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+}
+.control-center-menu .context-menu {
+    background-color: #111111;
+    padding: 4px 0;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+}
+.control-center-menu .context-menu::item {
+    background-color: transparent;
+    padding: 6px 12px;
+    margin: 2px 6px;
+    border-radius: 8px;
+    min-width: 100px;
+}
+.control-center-menu .context-menu::item:selected {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.yasb-bar {
+    background-color: rgba(0, 0, 0, 1.00);
+}
+/* <<< ShellFlow <<< */
