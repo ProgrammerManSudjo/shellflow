@@ -7,11 +7,11 @@
   a block in your PowerShell profile, and it opens the Windhawk download page. Files you already have are NOT replaced.
   If you want to choose each step, use install.ps1 instead. Read both files first: they are plain text, a few hundred lines.
 
-    irm https://raw.githubusercontent.com/ProgrammerManSudjo/shellflow/main/install-all.ps1 | iex     (only after you have read it)
+    irm https://raw.githubusercontent.com/YOUR-NAME/shellflow-dotfiles/main/install-all.ps1 | iex     (only after you have read it)
   or from a clone:   .\install-all.ps1
 #>
 
-$InstallUrl = "https://raw.githubusercontent.com/ProgrammerManSudjo/shellflow/main/install.ps1"
+$InstallUrl = "https://raw.githubusercontent.com/YOUR-NAME/shellflow-dotfiles/main/install.ps1"
 
 Write-Host ""
 Write-Host "  ============================ WARNING ============================" -ForegroundColor Red
@@ -30,4 +30,3 @@ try {
     if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "install.ps1"))) { & (Join-Path $PSScriptRoot "install.ps1") }
     else { Invoke-RestMethod -Uri $InstallUrl | Invoke-Expression }
 } finally { Remove-Item Env:\SHELLFLOW_ALL -ErrorAction SilentlyContinue }
-

@@ -1,0 +1,24 @@
+"""Everything the colour and system side offers, under one name: the settings window imports this as `th`."""
+from .core import *  # noqa: F401,F403
+from .colors import *  # noqa: F401,F403
+from .themes import *  # noqa: F401,F403
+from .themes.discord import *  # noqa: F401,F403
+from .themes.zed import *  # noqa: F401,F403
+from .themes.obsidian import *  # noqa: F401,F403
+from .themes.vscode import *  # noqa: F401,F403
+from .themes.neovim import *  # noqa: F401,F403
+from .themes.terminal import *  # noqa: F401,F403
+from .themes.browsers import *  # noqa: F401,F403
+from .themes.yazi import *  # noqa: F401,F403
+from .themes.filepilot import *  # noqa: F401,F403
+from .themes.helium import *  # noqa: F401,F403
+from .themes.tacky import *  # noqa: F401,F403
+from .themes.obs import *  # noqa: F401,F403
+from .themes.windhawk import *  # noqa: F401,F403
+from .system.winapi import *  # noqa: F401,F403
+from .system.sounds import *  # noqa: F401,F403
+from .system.helper import *  # noqa: F401,F403
+from .system.picker import *  # noqa: F401,F403
+from .system.install import *  # noqa: F401,F403
+from .system.doctor import *  # noqa: F401,F403
+from .cli import *  # noqa: F401,F403

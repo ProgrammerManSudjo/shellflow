@@ -108,7 +108,7 @@ ShellFlow can write colour themes for these once you have installed them. The in
 
 | Folder | What | Goes to |
 | :-- | :-- | :-- |
-| `shellflow/` | `theme.py`, `settings.py` | `%USERPROFILE%\.config\yasb\scripts` |
+| `scripts/` | `theme.py` (the launcher) and `shellflow/` (the program: `colors`, `themes/`, `system/`, `settings/`) | `%USERPROFILE%\.config\yasb\scripts` |
 | `defaults/yasb/` | starter `config.yaml`, `styles.css`, `.env` | `%USERPROFILE%\.config\yasb` |
 | `wallpapers/` | images (png, jpg, webp, bmp) | `%USERPROFILE%\Pictures\Wallpapers` |
 | `rainmeter/` | the Rainmeter cookie clock widget | `%USERPROFILE%\Documents\Rainmeter\Skins` |
@@ -122,7 +122,7 @@ ShellFlow can write colour themes for these once you have installed them. The in
 
 <br>
 
-1. When ShellFlow changes, copy the new `theme.py` and `settings.py` into `shellflow/`, then:
+1. When ShellFlow changes, copy the new `scripts` folder over the repo's `scripts/`, then:
    ```powershell
    git add . ; git commit -m "update" ; git push
    ```

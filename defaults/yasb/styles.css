@@ -1,5 +1,5 @@
 @import "yasb_colors.css";
-@import "theme_colors.css";   /* written by theme.py (home menu > Theme); overrides the accent vars */
+@import "themes/theme_colors.css";   /* written by theme.py (home menu > Theme); overrides the accent vars */
 
 /* ====================================================================
    THEME - Material You "content"-style: capsules take a tone of your

@@ -73,7 +73,7 @@ Refresh-Path
 $src = $null
 function Get-Source {
     if ($script:src) { return $script:src }
-    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "shellflow\theme.py"))) { $script:src = $PSScriptRoot; return $script:src }
+    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "scripts\theme.py"))) { $script:src = $PSScriptRoot; return $script:src }
     Say "Downloading the dotfiles..."
     $tmp = Join-Path $env:TEMP ("shellflow-" + [guid]::NewGuid().ToString("N"))
     New-Item -ItemType Directory -Path $tmp | Out-Null
@@ -92,7 +92,7 @@ if (Ask "Install ShellFlow (the settings window and colour scripts, needs Python
     if (-not (Have python)) { if (Ask "ShellFlow needs Python. Install it with scoop?" $true) { scoop install python; Refresh-Path } }
     if (Have python) { python -m pip install --upgrade --quiet pillow materialyoucolor }
     New-Item -ItemType Directory -Force -Path $scripts | Out-Null
-    Copy-Item "$src\shellflow\*.py" $scripts -Force
+    Copy-Item "$src\scripts\*" $scripts -Recurse -Force   # theme.py (the launcher) and the shellflow folder (the program)
     Say "ShellFlow scripts: $scripts"
 
     if (Ask "Install the starter YASB config (config.yaml, styles.css, .env: one bar, app themes and sounds off)?" $true) {
